@@ -1,4 +1,4 @@
 {
     "vim.vimrc.enable": true,
-    "vim.vimrc.path": "$HOME/codespace/.vimrc"
+    "vim.vimrc.path": "$HOME/.vimrc"
 }
