@@ -1,7 +1,7 @@
 {
   "name": "crm-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
