@@ -11,6 +11,6 @@ app.use(cors());
 app.use(express.json());
 
 // All routes under /
-app.use('/', routes);
+app.use('/api', routes);
 
 export default app;
