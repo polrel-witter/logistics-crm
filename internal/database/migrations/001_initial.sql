@@ -6,9 +6,9 @@ CREATE TABLE companies (
     cg_code TEXT,
     usher TEXT, -- User who owns the account
     note TEXT,
+    industry TEXT,
     revenue INTEGER,
     locations TEXT, -- JSON array as TEXT
-    employee_count INTEGER,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

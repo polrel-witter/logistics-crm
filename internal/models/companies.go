@@ -1,4 +1,4 @@
-package main
+package models
 
 import "time"
 
@@ -39,11 +39,11 @@ type Company struct {
 	Name          string
 	Domain        string
 	CgCode        *string
-	Lead          *string
+	Usher         *string
 	Note          *string
+	Industry      *string
 	Revenue       *int
 	Locations     []string
-	EmployeeCount *int
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
