@@ -4,7 +4,6 @@ CREATE TABLE companies (
     name TEXT NOT NULL,
     domain TEXT UNIQUE NOT NULL, -- Key for email association
     cg_code TEXT,
-    usher TEXT, -- User who owns the account
     note TEXT,
     industry TEXT,
     revenue INTEGER,

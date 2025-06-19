@@ -39,7 +39,6 @@ type Company struct {
 	Name          string
 	Domain        string
 	CgCode        *string
-	Usher         *string
 	Note          *string
 	Industry      *string
 	Revenue       *int
