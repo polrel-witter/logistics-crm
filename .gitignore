@@ -1,5 +1,7 @@
 node_modules/
 dist/
+tmp/
+main
 .env
 .DS_Store
 *.log
