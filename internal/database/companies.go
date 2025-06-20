@@ -7,13 +7,6 @@ import (
 
 // TODO: alias the db query to reduce clutter
 
-func (db *DB) Save(company *models.Company) error {
-	if company.ID == 0 {
-		return db.CreateCompany(company)
-	}
-	return db.UpdateCompany(company)
-}
-
 func (db *DB) CreateCompany(company *models.Company) error {
 	query := `
         INSERT INTO companies (domain, name, cg_code, note, revenue, locations, industry)
