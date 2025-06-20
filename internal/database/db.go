@@ -1,11 +1,8 @@
 // SQLite db connection
 package database
 
-import (
-	"database/sql"
-
-	_ "github.com/mattn/go-sqlite3"
-)
+import "database/sql"
+import _ "github.com/mattn/go-sqlite3"
 
 type DB struct {
 	conn *sql.DB

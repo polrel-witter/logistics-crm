@@ -1,9 +1,7 @@
 // Company database actions
 package database
 
-import (
-	"logistics-crm/internal/models"
-)
+import "logistics-crm/internal/models"
 
 // TODO: alias the db query to reduce clutter
 

@@ -2,10 +2,9 @@
 package handlers
 
 import (
-	"net/http"
-
 	"logistics-crm/internal/database"
 	"logistics-crm/internal/models"
+	"net/http"
 )
 
 type CompanyHandler struct {
