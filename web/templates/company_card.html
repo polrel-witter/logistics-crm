@@ -1,0 +1,11 @@
+<!-- web/templates/company_card.html -->
+<div class="company-card" style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+    <h3>{{.Name}}</h3>
+    <p><strong>Domain:</strong> {{.Domain}}</p>
+    <p><strong>CG code:</strong> {{.CgCode}}</p>
+    <p><strong>Note:</strong> {{.Note}}</p>
+    <p><strong>Industry:</strong> {{.Industry}}</p>
+    <p><strong>Revenue:</strong> ${{.Revenue}}</p>
+    <p><small>Added: {{.CreatedAt.Format "2006-01-02 15:04"}}</small></p>
+    <p><small>Last updated: {{.UpdatedAt.Format "2006-01-02 15:04"}}</small></p>
+</div>

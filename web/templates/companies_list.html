@@ -1,0 +1,26 @@
+<!-- web/templates/companies_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.Title}}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <h1>{{.Title}}</h1>
+
+<!-- Add Company Form -->
+    <form hx-post="/api/companies/create"
+          hx-target="#companies-container"
+          hx-swap="afterbegin">
+        <input name="domain" placeholder="Domain" required>
+        <button type="submit">Add Company</button>
+    </form>
+
+<!-- Companies Container -->
+    <div id="companies-container">
+        {{range .Companies}}
+            {{template "company_card.html" .}}
+        {{end}}
+    </div>
+</body>
+</html>
