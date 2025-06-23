@@ -1,8 +1,11 @@
 // SQLite db connection
 package database
 
-import "database/sql"
-import _ "github.com/mattn/go-sqlite3"
+import (
+	"database/sql"
+
+	_ "github.com/mattn/go-sqlite3"
+)
 
 type DB struct {
 	conn *sql.DB
@@ -28,14 +31,14 @@ func (db *DB) createTables() error {
 	query := `
     CREATE TABLE IF NOT EXISTS companies (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL,
         domain TEXT UNIQUE NOT NULL,
-		cg_code TEXT,
-		note TEXT,
-        industry TEXT,
-        revenue INTEGER,
-		locations TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		name TEXT DEFAULT '',
+		cg_code TEXT DEFAULT '',
+		note TEXT DEFAULT '',
+        industry TEXT DEFAULT '',
+        revenue INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
     `
 	_, err := db.conn.Exec(query)
