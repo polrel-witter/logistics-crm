@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"logistics-crm/internal/database"
 	"logistics-crm/internal/handlers"
@@ -15,14 +16,21 @@ func main() {
 	}
 	defer db.Close()
 
+	// Parse templates
+	tmpl, err := template.ParseGlob("web/templates/*.html")
+	if err != nil {
+		log.Fatal("Failed to parse templates:", err)
+	}
+
 	// Setup handlers
-	companyHandler := handlers.NewCompanyHandler(db)
+	companyHandler := handlers.NewCompanyHandler(db, tmpl)
 
 	// Routes
+	http.HandleFunc("/companies", companyHandler.ListCompanies)
 	http.HandleFunc("/api/companies/create", companyHandler.CreateCompany)
 
 	// Serve static files (for your HTML/CSS/JS)
-	http.Handle("/", http.FileServer(http.Dir("./web/")))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./web/static/"))))
 
 	log.Println("Server starting on :8080")
 	log.Println("Database: crm.db")
