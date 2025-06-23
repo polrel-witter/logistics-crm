@@ -35,16 +35,15 @@ const (
 
 // Base structs (database entities)
 type Company struct {
-	ID            int
-	Name          string
-	Domain        string
-	CgCode        *string
-	Note          *string
-	Industry      *string
-	Revenue       *int
-	Locations     []string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID        int
+	Domain    string
+	Name      string
+	CgCode    *string
+	Note      *string
+	Industry  *string
+	Revenue   *int
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Port struct {
@@ -54,16 +53,15 @@ type Port struct {
 }
 
 type TradeData struct {
-	ID             int
-	CompanyID      int
-	PortID         int
-	Direction      DirectionType
-	Volume         int
-	Period         Period
-	TopCommodities []string
-	Trend          VolumeTrend
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
+	ID        int
+	CompanyID int
+	PortID    int
+	Direction DirectionType
+	Volume    int
+	Period    Period
+	Trend     VolumeTrend
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Contact struct {
@@ -75,4 +73,19 @@ type Contact struct {
 	Phone     *string
 	Title     *string
 	CreatedAt time.Time
+}
+
+// Methods
+func (c *Company) ScanFields() []interface{} {
+	return []interface{}{
+		&c.ID,
+		&c.Domain,
+		&c.Name,
+		&c.CgCode,
+		&c.Note,
+		&c.Industry,
+		&c.Revenue,
+		&c.CreatedAt,
+		&c.UpdatedAt,
+	}
 }
