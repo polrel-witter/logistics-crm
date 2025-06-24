@@ -2,8 +2,8 @@ node_modules/
 dist/
 tmp/
 main
-crm.db
-.env
+*.db
+*.env
 .DS_Store
 *.log
 .devcontainer/
