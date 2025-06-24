@@ -82,12 +82,11 @@ func (db *DB) GetAllCompanies() ([]*models.Company, error) {
 	return companies, nil
 }
 
-// TODO: domain search
-// func (db *DB) GetCompanyByDomain(domain string) (*models.Company, error) {
-// 	query := `SELECT id, domain, name, cg_code, note, industry, revenue, created_at, updated_at
-// 			  FROM companies`
-//
-// 	company := &models.Company{}
-// 	err := db.conn.QueryRow(query, domain).Scan(company.ScanFields()...)
-// 	return company, err
-// }
+func (db *DB) GetCompanyByDomain(domain string) (*models.Company, error) {
+	query := `SELECT id, domain, name, cg_code, note, industry, revenue, created_at, updated_at
+			  FROM companies`
+
+	company := &models.Company{}
+	err := db.conn.QueryRow(query, domain).Scan(company.ScanFields()...)
+	return company, err
+}
