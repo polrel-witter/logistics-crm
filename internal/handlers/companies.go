@@ -4,19 +4,23 @@ package handlers
 import (
 	"html/template"
 	"logistics-crm/internal/database"
+	"logistics-crm/internal/integrations/apollo"
 	"logistics-crm/internal/models"
+	"logistics-crm/internal/services"
 	"net/http"
 )
 
 type CompanyHandler struct {
-	db   *database.DB
-	tmpl *template.Template
+	db     *database.DB
+	tmpl   *template.Template
+	apolloClient *apollo.Client
 }
 
-func NewCompanyHandler(db *database.DB, tmpl *template.Template) *CompanyHandler {
+func NewCompanyHandler(db *database.DB, tmpl *template.Template, apolloClient *apollo.Client) *CompanyHandler {
 	return &CompanyHandler{
-		db:   db,
-		tmpl: tmpl,
+		db:           db,
+		tmpl:         tmpl,
+		apolloClient: apolloClient,
 	}
 }
 
@@ -26,9 +30,10 @@ func (h *CompanyHandler) CreateCompany(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	domain := r.FormValue("domain")
+
 	company := &models.Company{
-		Domain: r.FormValue("domain"),
-		// TODO: pull external info based on domain
+		Domain: domain,
 	}
 
 	// Save to database
@@ -36,6 +41,9 @@ func (h *CompanyHandler) CreateCompany(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	
+	// Update database with info pulled from Apollo.io
+	services.EnrichCompany(domain, h.apolloClient)
 
 	// For HTMX: return just the new company card
 	w.Header().Set("Content-Type", "text/html")
