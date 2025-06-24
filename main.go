@@ -5,8 +5,19 @@ import (
 	"log"
 	"logistics-crm/internal/database"
 	"logistics-crm/internal/handlers"
+	"logistics-crm/internal/integrations/apollo"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
+}
 
 func main() {
 	// Initialize database
@@ -16,14 +27,24 @@ func main() {
 	}
 	defer db.Close()
 
-	// Parse templates
+	// Parse html templates
 	tmpl, err := template.ParseGlob("web/templates/*.html")
 	if err != nil {
 		log.Fatal("Failed to parse templates:", err)
 	}
 
+	// Configure integrations
+	apolloAPIKey := os.Getenv("APOLLO_API_KEY")
+	if apolloAPIKey == "" {
+		log.Fatal("APOLLO_API_KEY environment variable is required")
+	}
+	apolloClient := &apollo.Client{
+		APIKey: apolloAPIKey,
+		Client: &http.Client{},
+	}
+
 	// Setup handlers
-	companyHandler := handlers.NewCompanyHandler(db, tmpl)
+	companyHandler := handlers.NewCompanyHandler(db, tmpl, apolloClient)
 
 	// Routes
 	http.HandleFunc("/companies", companyHandler.ListCompanies)
