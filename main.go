@@ -6,6 +6,7 @@ import (
 	"logistics-crm/internal/database"
 	"logistics-crm/internal/handlers"
 	"logistics-crm/internal/integrations/apollo"
+	"logistics-crm/internal/services"
 	"net/http"
 	"os"
 
@@ -43,8 +44,9 @@ func main() {
 		Client: &http.Client{},
 	}
 
-	// Setup handlers
-	companyHandler := handlers.NewCompanyHandler(db, tmpl, apolloClient)
+	// Setup services and handlers
+	companyService := services.NewCompanyService(db, apolloClient)
+	companyHandler := handlers.NewCompanyHandler(db, companyService, tmpl)
 
 	// Routes
 	http.HandleFunc("/companies", companyHandler.ListCompanies)
