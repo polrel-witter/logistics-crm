@@ -2,25 +2,30 @@
 package services
 
 import (
-	"logistics-crm/internal/models"
 	"logistics-crm/internal/database"
 	"logistics-crm/internal/integrations/apollo"
+	"logistics-crm/internal/models"
 )
 
-func EnrichCompany(domain string, apolloClient *apollo.Client) (*models.Company, error) {
-	// Check if company exists
-	existing, err := database.GetCompanyByDomain(domain)
-	if err == nil {
-		return existing, nil
-	}
+type CompanyService struct {
+	db     *database.DB
+	apollo *apollo.Client
+}
 
+func NewCompanyService(db *database.DB, apollo *apollo.Client) *CompanyService {
+	return &CompanyService{
+		db:     db,
+		apollo: apollo,
+	}
+}
+
+func (s *CompanyService) EnrichCompany(domain string) error {
 	// Fetch from Apollo.io
-	apolloData, err := apolloClient.GetCompanyProfile(domain)
+	apolloData, err := s.apollo.GetCompanyProfile(domain)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	// Convert and save
 	company := &models.Company{
 		Domain:   domain,
 		Name:     apolloData.Name,
@@ -28,5 +33,5 @@ func EnrichCompany(domain string, apolloClient *apollo.Client) (*models.Company,
 		Revenue:  apolloData.Revenue,
 	}
 
-	// TODO: save to db
+	return s.db.UpdateCompany(company)
 }
