@@ -8,17 +8,19 @@ import (
 	"net/http"
 )
 
+// Types
 type Client struct {
 	APIKey string
 	Client *http.Client
 }
 
 type CompanyProfile struct {
-	Name     string `json:"name"`
-	Revenue  int64  `json:"annual_revenue"`
-	Industry string `json:"industry"`
+	Name     *string `json:"name"`
+	Revenue  *int    `json:"annual_revenue"`
+	Industry *string `json:"industry"`
 }
 
+// Methods
 func (c *Client) buildApolloGETRequest(url string) (*http.Request, error) {
 	req, _ := http.NewRequest("GET", url, nil)
 
