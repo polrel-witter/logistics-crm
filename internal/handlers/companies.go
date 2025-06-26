@@ -4,29 +4,39 @@ package handlers
 import (
 	"html/template"
 	"logistics-crm/internal/database"
-	"logistics-crm/internal/integrations/apollo"
 	"logistics-crm/internal/models"
 	"logistics-crm/internal/services"
 	"net/http"
 )
 
+// Types
 type CompanyHandler struct {
-	db     *database.DB
-	tmpl   *template.Template
-	apolloClient *apollo.Client
+	db       *database.DB
+	services *services.CompanyService
+	tmpl     *template.Template
 }
 
-func NewCompanyHandler(db *database.DB, tmpl *template.Template, apolloClient *apollo.Client) *CompanyHandler {
+// Error handling
+func (h *CompanyHandler) writeInternalError(w http.ResponseWriter, err error) {
+	http.Error(w, err.Error(), http.StatusInternalServerError)
+}
+
+func (h *CompanyHandler) writeMethodNotAllowed(w http.ResponseWriter) {
+	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
+// Methods
+func NewCompanyHandler(db *database.DB, services *services.CompanyService, tmpl *template.Template) *CompanyHandler {
 	return &CompanyHandler{
-		db:           db,
-		tmpl:         tmpl,
-		apolloClient: apolloClient,
+		db:       db,
+		services: services,
+		tmpl:     tmpl,
 	}
 }
 
 func (h *CompanyHandler) CreateCompany(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		h.writeMethodNotAllowed(w)
 		return
 	}
 
@@ -38,30 +48,33 @@ func (h *CompanyHandler) CreateCompany(w http.ResponseWriter, r *http.Request) {
 
 	// Save to database
 	if err := h.db.CreateCompany(company); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.writeInternalError(w, err)
 		return
 	}
-	
+
 	// Update database with info pulled from Apollo.io
-	services.EnrichCompany(domain, h.apolloClient)
+	if err := h.services.EnrichCompany(domain); err != nil {
+		h.writeInternalError(w, err)
+		return
+	}
 
 	// For HTMX: return just the new company card
 	w.Header().Set("Content-Type", "text/html")
 	if err := h.tmpl.ExecuteTemplate(w, "company_card.html", company); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.writeInternalError(w, err)
 		return
 	}
 }
 
 func (h *CompanyHandler) ListCompanies(w http.ResponseWriter, r *http.Request) {
-	// 1. Get data from database
+	// Get data from database
 	companies, err := h.db.GetAllCompanies()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.writeInternalError(w, err)
 		return
 	}
 
-	// 2. Prepare data for template
+	// Prepare data for template
 	data := struct {
 		Companies []*models.Company
 		Title     string
@@ -70,10 +83,10 @@ func (h *CompanyHandler) ListCompanies(w http.ResponseWriter, r *http.Request) {
 		Title:     "Companies",
 	}
 
-	// 3. Render template with data
+	// Render template with data
 	w.Header().Set("Content-Type", "text/html")
 	if err := h.tmpl.ExecuteTemplate(w, "companies_list.html", data); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.writeInternalError(w, err)
 		return
 	}
 }
