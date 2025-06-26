@@ -37,7 +37,7 @@ const (
 type Company struct {
 	ID        int
 	Domain    string
-	Name      string
+	Name      *string
 	CgCode    *string
 	Note      *string
 	Industry  *string
