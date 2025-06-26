@@ -1,4 +1,4 @@
-// Company database actions
+// Company CRUD operations
 package database
 
 import (
@@ -6,34 +6,31 @@ import (
 	"logistics-crm/internal/models"
 )
 
-// TODO: add update capability
-//func (db *DB) SaveCompany(company *models.Company) error {
-//	if company.ID == 0 {
-//		db.createCompany(company)
-//		return nil
-//	}
-//
-//	db.updateCompany(company)
-//	return nil
-//}
+// Methods (operating on DB)
+func (db *DB) UpdateCompany(company *models.Company) error {
+	// TODO: update to include full query
+	query := `UPDATE companies
+            SET name = ?, updated_at = datetime('now')
+            WHERE id = ?`
 
-//func (db *DB) updateCompany(company *models.Company) error {
-//	query := `UPDATE companies
-//            SET name = ?, updated_at = datetime('now')
-//            WHERE id = ?`
-//
-//	_, err := db.conn.Exec(query,
-//		company.Domain,
-//		company.Name,
-//		company.CgCode,
-//		company.Note,
-//		company.Industry,
-//		company.Revenue,
-//		company.ID,
-//	)
-//
-//	return err
-//}
+	_, err := db.conn.Exec(query,
+		company.Domain,
+		company.Name,
+		company.CgCode,
+		company.Note,
+		company.Industry,
+		company.Revenue,
+		company.ID,
+	)
+
+	if err != nil {
+		log.Printf("Error updating company: %v", err)
+		return err
+	}
+
+	log.Printf("Successfully updated company with id: %d", company.ID)
+	return nil
+}
 
 func (db *DB) CreateCompany(company *models.Company) error {
 	query := `INSERT INTO companies (domain, name, cg_code, note, industry, revenue)
@@ -48,12 +45,13 @@ func (db *DB) CreateCompany(company *models.Company) error {
 		company.Industry,
 		company.Revenue,
 	).Scan(&company.ID, &company.CreatedAt, &company.UpdatedAt)
+
 	if err != nil {
 		log.Printf("Error creating company: %v", err)
 		return err
 	}
 
-	log.Printf("Successfully added company with id: %d", company.ID)
+	log.Printf("Successfully created company with id: %d", company.ID)
 	return nil
 }
 
